@@ -1,0 +1,53 @@
+#tooltip p {
+    margin: 0;
+    color: black;
+}
+
+#tooltip img {
+    width: 200px;
+    height: auto;
+}
+
+#tooltip {
+    background: white;
+    color: lightblue;
+    font-weight: bold;
+    padding: 4px 8px;
+    font-size: 13px;
+    border-radius: 4px;
+    display: none;
+}
+
+#tooltip[data-show] {
+    display: block;
+}
+
+#arrow,
+#arrow::before {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    /* z-index: -1; */
+}
+
+#arrow::before {
+    content: '';
+    transform: rotate(45deg);
+    background: white;
+}
+
+#tooltip[data-popper-placement^='top']>#arrow {
+    bottom: -4px;
+}
+
+#tooltip[data-popper-placement^='bottom']>#arrow {
+    top: -4px;
+}
+
+#tooltip[data-popper-placement^='left']>#arrow {
+    right: -4px;
+}
+
+#tooltip[data-popper-placement^='right']>#arrow {
+    left: -4px;
+}

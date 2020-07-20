@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Goblin Regist</title>
+    <link href="../static/all/img/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="../static/all/css/setting.css">
+    <link rel="stylesheet" href="../static/all/css/animate.css">
+    <link rel="stylesheet" href="../static/all/css/noticejs.css">
+    <link rel="stylesheet" href="../static/login/css/admin.min.css">
+    <link rel="stylesheet" href="../static/login/css/verify.min.css">
+</head>
+
+<body class="bg-gradient-primary">
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="row">
+                            <div class="col-lg-5 d-none d-lg-block bg-register-image" style="cursor: pointer;" onclick="location.href='/home.html'" title="单击返回主页"></div>
+                            <div class="col-lg-7">
+                                <div class="p-5">
+                                    <div class="text-center">
+                                        <h1 class="h4 text-gray-900 mb-4"><span onclick="location.href='/home.html'" title="单击返回主页">创建账号!</span></h1>
+                                    </div>
+                                    <form class="user">
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="username" name="username" value="coley48" required placeholder="用户名">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="email" class="form-control form-control-user" id="email" name="email" placeholder="邮箱">
+                                        </div>
+                                        <div class="form-group" style="position: relative;">
+                                            <input type="text" class="form-control form-control-user" id="code" name="code" placeholder="邮箱验证码">
+                                            <input id="btnSendCode" type="button" class="Obtain" value="获取验证码" onclick="sendCode()">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="text" class="form-control form-control-user" id="phone" name="phone" placeholder="手机号">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="password" name="password" value="123456" required placeholder="注册密码">
+                                        </div>
+                                        <div class="form-group">
+                                            <input type="password" class="form-control form-control-user" id="confirmation" name="confirmation" required placeholder="确认密码">
+                                        </div>
+                                        <a class="btn btn-primary btn-user btn-block" style="color: white;" id="submit" onclick="javascript:regist()">注册</a>
+                                    </form>
+                                    <hr>
+                                    <div class="text-center">
+                                        <a class="small" href="/login.html?j=home.html">已有账号? 登录!</a> </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <script src="../static/all/js/jquery.min.js"></script>
+    <script src="../static/all/js/notice.js"></script>
+    <script src="../static/all/js/all.js"></script>
+    <!-- <script type="text/javascript" src="../static/login/js/matching.min.js"></script> -->
+    <script type="text/javascript">
+        var username = $("#username");
+        var email = $("#email");
+        var code = $("#code");
+        var phone = $("#phone");
+        var password = $("#password");
+        var confirmation = $("#confirmation");
+        var btnSendCode = $("#btnSendCode");
+
+        username.bind("change", function() {
+            var resp = getS("/API/regist?name=" + username.val())
+            if (resp && resp.code != 200) {
+                username.val("").focus();
+            }
+        })
+
+        //验证码
+        var emailRegex = /^[A-Za-z0-9]+([_\.][A-Za-z0-9]+)*@([A-Za-z0-9\-]+\.)+[A-Za-z]{2,6}$/
+        var phoneRegex = /(^1[3|4|5|7|8]\d{9}$)|(^09\d{8}$)/; //手机号正则 
+        var countdown = 60; //间隔函数，1秒执行
+        var counting; //当前剩余秒数
+        var Timer; //timer变量，控制时间
+        function sendCode() {
+            counting = countdown;
+            var mail = $.trim(email.val())
+            if (emailRegex.test(mail) == false) {
+                Alert("请输入有效邮箱", "warning");
+                return false
+            }
+
+            //设置button效果，开始计时
+            btnSendCode.attr("disabled", "true").val(+counting + "秒再获取");
+            Timer = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+            //向后台发送处理数据
+            postA("/API/verify", {
+                email: mail
+            })
+        }
+
+        function SetRemainTime() {
+            if (counting == 0) {
+                window.clearInterval(Timer); //停止计时器
+                btnSendCode.removeAttr("disabled"); //启用按钮
+                btnSendCode.val("重新发送");
+            } else {
+                counting--;
+                btnSendCode.val(+counting + "秒再获取");
+            }
+        }
+
+        function regist() {
+            var password = $("#password");
+            var confirmation = $("#confirmation");
+            if (verify("username", "email", "code", "phone", "password", "confirmation")) {
+                var phoneNumber = $.trim(phone.val());
+                if (!phoneRegex.test(phoneNumber)) {
+                    Alert(" 请输入有效的手机号码", "warning");
+                    return
+                }
+                if (password.val().length < 6) {
+                    Alert("密码长度不能少于6位！", "warning");
+                    return
+                }
+                if (password.val() !== confirmation.val()) {
+                    Alert("密码不一致！", "warning");
+                    return
+                }
+
+                postA("/API/regist", {
+                    username: username.val(),
+                    password: password.val(),
+                    email: email.val(),
+                    code: code.val(),
+                    phone: phoneNumber,
+                }, function() {
+                    location.href = "/login.html?j=home.html";
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>

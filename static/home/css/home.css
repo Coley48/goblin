@@ -1,0 +1,38 @@
+@media only screen and (max-width:768px) {
+    .navigation li a {
+        padding: 15px 0 15px;
+    }
+    .font-design img {
+        width: 40%
+    }
+    .slider-content {
+        padding-top: 40px;
+    }
+    /* .row {
+        padding-bottom: 0;
+        flex-wrap: nowrap;
+    } */
+    .blog-details-content {
+        margin-right: 0;
+    }
+    .content-box {
+        width: 100%
+    }
+    .sidebar-side {
+        display: none;
+    }
+    .footer-title {
+        margin-top: 20px;
+    }
+    .categories-list li a {
+        text-align: left;
+    }
+}
+
+button.dplayer-icon.dplayer-comment-setting-icon {
+    z-index: 10 !important;
+}
+
+div.dplayer-comment-setting-type label {
+    display: inline !important;
+}

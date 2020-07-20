@@ -1,0 +1,8 @@
+#ignore
+test/
+upload/
+resource/
+conf/
+logs/
+temp/
+contro/global.go

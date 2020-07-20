@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Goblin Detail</title>
+
+    <link href="../static/all/img/favicon.ico" rel="icon" type="image/x-icon">
+    <link rel="stylesheet" href="../static/all/css/setting.css">
+    <link rel="stylesheet" href="../static/detail/css/normalize.css">
+    <link rel="stylesheet" href="../static/detail/css/style.css">
+</head>
+
+<body>
+    <div class="w-container" id="container">
+    </div>
+
+    <script type="text/x-dot-template" id="template">
+        {{~it:value:index}}
+        <header class="w-row">
+            <div class="column w-col w-col-4 w-col-medium-4">
+                <img src="{{=value.image}}" alt="" class="image">
+            </div>
+            <div class="w-col w-col-8 w-col-medium-8">
+                <h2 id="title">{{=value.title}}</h2>
+                <div class="brief-holder">
+                    <p id="brief">{{=value.brief}}</p>
+                </div>
+                <div class="section-info">
+                    <div class="read-icon">浏览</div>
+                    <div class="read-count">{{=value.click}}</div>
+                </div>
+            </div>
+        </header>
+        <div class="display-holder">
+            <ul id="display" class="section-display">
+                <li><img src="../static/detail/img/{{=value.type}}/1.jpg" alt=""></li>
+                <li><img src="../static/detail/img/{{=value.type}}/2.jpg" alt=""></li>
+                <li><img src="../static/detail/img/{{=value.type}}/3.jpg" alt=""></li>
+                <li><img src="../static/detail/img/{{=value.type}}/4.jpg" alt=""></li>
+                <li><img src="../static/detail/img/{{=value.type}}/5.jpg" alt=""></li>
+            </ul>
+        </div>
+        <div id="intro" class="paragraph">
+            {{=value.intro}}
+        </div>
+        <div class="section-footer"><a href="/contact.html" target="_blank" class="w-button">立即预约</a></div>
+        {{~}}
+    </script>
+
+    <script src="../static/all/js/jquery.min.js"></script>
+    <script src="../static/all/js/all.js"></script>
+    <script src="../static/all/js/dot.js"></script>
+    <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+
+    <script>
+        var resp = getS("/API/detail?type=" + location.hash.substr(1));
+        if (resp && resp.code == 200) {
+            var templateTxt = doT.template(document.getElementById("template").innerHTML); //生成模板
+            document.getElementById("container").innerHTML = templateTxt(resp.data); //数据渲染
+        }
+    </script>
+</body>
+
+</html>
